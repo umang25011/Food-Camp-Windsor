@@ -2,7 +2,7 @@ import React from "react"
 import logo from "./logo.svg"
 import "./App.css"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import LoginScreen from "./pages/user/login/LoginScreen"
+import LoginPage from "./features/login/LoginPage"
 
 function App() {
   return (
@@ -25,7 +25,7 @@ function App() {
           }
         />
 
-        <Route path="/login" element={<LoginScreen />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
     </BrowserRouter>
   )
