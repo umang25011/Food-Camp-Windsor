@@ -1,6 +1,8 @@
 import React, { useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { loginWithGoogle } from "../../utils/firebase"
 import { updateData } from "./loginSlice"
+import "./loginPageCss.css"
 
 export default function LoginPage() {
   const [password, setPassword] = useState("")
@@ -8,8 +10,8 @@ export default function LoginPage() {
   const [passwordError, setpasswordError] = useState("")
   const [emailError, setemailError] = useState("")
 
-    const emailRedux = useAppSelector(state=>state.login.email)
-    const dispatch = useAppDispatch()
+  const emailRedux = useAppSelector((state) => state.login.email)
+  const dispatch = useAppDispatch()
 
   const handleValidation = () => {
     let formIsValid = true
@@ -23,8 +25,7 @@ export default function LoginPage() {
       formIsValid = true
     }
 
-   
-    dispatch(updateData({email:email, password:"", name: "Test User"}))
+    dispatch(updateData({ email: email, password: "", name: "Test User" }))
     return formIsValid
   }
 
@@ -32,56 +33,105 @@ export default function LoginPage() {
     e.preventDefault()
     const isFormValid = handleValidation()
     if (isFormValid) {
-
     }
   }
 
   return (
     <div>
-      <div className="container">
-        <div className="row d-flex justify-content-center">
-          <div className="col-md-4">
-            <form id="loginform" onSubmit={loginSubmit}>
-              <div className="form-group">
-                <label>Email address</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  id="EmailInput"
-                  name="EmailInput"
-                  aria-describedby="emailHelp"
-                  placeholder="Enter email"
-                  onChange={(event) => setEmail(event.target.value)}
-                />
-                <small id="emailHelp" className="text-danger form-text">
-                  {emailError}
-                </small>
-              </div>
-              <div className="form-group">
-                <label>Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="exampleInputPassword1"
-                  placeholder="Password"
-                  onChange={(event) => setPassword(event.target.value)}
-                />
-                <small id="passworderror" className="text-danger form-text">
-                  {passwordError}
-                </small>
-              </div>
-              <p>{emailRedux}</p>
-              <div className="form-group form-check">
-                <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-                <label className="form-check-label">Check me out</label>
-              </div>
-              <button type="submit" className="btn btn-primary">
-                Submit
-              </button>
-            </form>
+      <section className="login-block">
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-sm-12">
+              <form className="md-float-material form-material" action="#" method="POST">
+                <div className="auth-box card">
+                  <div className="card-block">
+                    <div className="row">
+                      <div className="col-md-12">
+                        <h3 className="text-center heading">Food Camp</h3>
+                      </div>
+                    </div>
+                    <div className="form-group form-primary">
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="first_name"
+                        value=""
+                        placeholder="Display name"
+                        id="first_name"
+                      />
+                    </div>
+
+                    <div className="form-group form-primary">
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="email"
+                        value=""
+                        placeholder="Email"
+                        id="email"
+                      />
+                    </div>
+
+                    <div className="form-group form-primary">
+                      <input
+                        type="password"
+                        className="form-control"
+                        name="password"
+                        placeholder="Password"
+                        value=""
+                        id="password"
+                      />
+                    </div>
+
+                    <div className="form-group form-primary">
+                      <input
+                        type="password"
+                        className="form-control"
+                        name="password_confirm"
+                        placeholder="Repeat password"
+                        value=""
+                        id="password_confirm"
+                      />
+                    </div>
+
+                    <div className="row">
+                      <div className="col-md-12">
+                        <input
+                          type="submit"
+                          className="btn btn-primary btn-md btn-block waves-effect text-center m-b-20"
+                          name="submit"
+                          value="Signup Now"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="or-container">
+                      <div className="line-separator"></div> <div className="or-label">or</div>
+                      <div className="line-separator"></div>
+                    </div>
+
+                    <div className="row">
+                      <div className="col-md-12">
+                        <a className="btn btn-lg btn-google btn-block text-uppercase btn-outline" href="#">
+                          <img src="https://img.icons8.com/color/16/000000/google-logo.png" /> Signup Using Google
+                        </a>
+                      </div>
+                    </div>
+                    <br />
+
+                    <p className="text-inverse text-center">
+                      Already have an account?{" "}
+                      <a href="<?= base_url() ?>auth/login" data-abc="true">
+                        Login
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   )
 }
