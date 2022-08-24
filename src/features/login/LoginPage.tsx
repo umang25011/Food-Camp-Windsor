@@ -1,15 +1,19 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { loginWithGoogle } from "../../utils/firebase"
-import { updateData } from "./loginSlice"
+import { loginWithGoogle } from "./loginSlice"
 import "./loginPageCss.css"
+import { Navigate, useNavigate } from "react-router-dom"
 
 export default function LoginPage() {
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [email, setEmail] = useState("")
-  const [passwordError, setpasswordError] = useState("")
-  const [emailError, setemailError] = useState("")
-
+  const [error, setError] = useState<
+    { error: "email" | "password" | "name" | "confirmPassword" | "firstName" | "lastName"; message: string } | undefined
+  >()
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const navigate = useNavigate()
   const emailRedux = useAppSelector((state) => state.login.email)
   const dispatch = useAppDispatch()
 
@@ -18,23 +22,24 @@ export default function LoginPage() {
 
     if (!email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/)) {
       formIsValid = false
-      setemailError("Email Not Valid")
+      setError({ error: "email", message: "Email Not Valid" })
       return false
     } else {
-      setemailError("")
       formIsValid = true
     }
 
-    dispatch(updateData({ email: email, password: "", name: "Test User" }))
-    return formIsValid
+    if (formIsValid) setError(undefined)
+
+    // TO DO
+    // dispatch(updateData({ email: email, password: password, name: firstName + " " + lastName }))
   }
 
-  const loginSubmit = (e: any) => {
-    e.preventDefault()
-    const isFormValid = handleValidation()
-    if (isFormValid) {
+  useEffect(() => {
+    if(emailRedux) {
+      navigate("/profile")
     }
-  }
+  }, [emailRedux])
+  
 
   return (
     <div>
@@ -55,18 +60,30 @@ export default function LoginPage() {
                         type="text"
                         className="form-control"
                         name="first_name"
-                        value=""
-                        placeholder="Display name"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="First name"
                         id="first_name"
                       />
                     </div>
-
+                    <div className="form-group form-primary">
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="last_name"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Last name"
+                        id="last_name"
+                      />
+                    </div>
                     <div className="form-group form-primary">
                       <input
                         type="text"
                         className="form-control"
                         name="email"
-                        value=""
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder="Email"
                         id="email"
                       />
@@ -78,7 +95,8 @@ export default function LoginPage() {
                         className="form-control"
                         name="password"
                         placeholder="Password"
-                        value=""
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         id="password"
                       />
                     </div>
@@ -89,7 +107,8 @@ export default function LoginPage() {
                         className="form-control"
                         name="password_confirm"
                         placeholder="Repeat password"
-                        value=""
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         id="password_confirm"
                       />
                     </div>
@@ -97,9 +116,8 @@ export default function LoginPage() {
                     <div className="row">
                       <div className="col-md-12">
                         <input
-                          type="submit"
+                          type="button"
                           className="btn btn-primary btn-md btn-block waves-effect text-center m-b-20"
-                          name="submit"
                           value="Signup Now"
                         />
                       </div>
@@ -112,16 +130,23 @@ export default function LoginPage() {
 
                     <div className="row">
                       <div className="col-md-12">
-                        <a className="btn btn-lg btn-google btn-block text-uppercase btn-outline" href="#">
-                          <img src="https://img.icons8.com/color/16/000000/google-logo.png" /> Signup Using Google
-                        </a>
+                        <button
+                          className="btn btn-lg btn-google btn-block text-uppercase btn-outline"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            dispatch(loginWithGoogle())
+                          }}
+                        >
+                          <img alt="Google Logo" src="https://img.icons8.com/color/16/000000/google-logo.png" /> Signup
+                          Using Google
+                        </button>
                       </div>
                     </div>
                     <br />
 
                     <p className="text-inverse text-center">
                       Already have an account?{" "}
-                      <a href="<?= base_url() ?>auth/login" data-abc="true">
+                      <a href="/login" data-abc="true">
                         Login
                       </a>
                     </p>
