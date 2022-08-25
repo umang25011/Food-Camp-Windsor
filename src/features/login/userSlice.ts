@@ -1,6 +1,7 @@
 import { applyMiddleware, createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { start } from "repl"
 import { googleLoginPopup } from "../../utils/firebase"
+import { storeUserData } from "../../utils/localStorage"
 
 export interface NormalUser {
   email: string
@@ -25,7 +26,7 @@ export const loginWithGoogle = createAsyncThunk("user/loginWithGoogle", async ()
   } catch (error) {}
 })
 
-const loginSlice = createSlice({
+const userSlice = createSlice({
   name: "user",
   initialState: normalUserInitialState,
   reducers: {
@@ -35,16 +36,20 @@ const loginSlice = createSlice({
       // })
     },
     logout: () => {},
-    updateData: (state, action: PayloadAction<NormalUser>) => {},
+    updateUserData: (state, { payload }) => {
+      state = payload
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loginWithGoogle.fulfilled, (state, { payload }) => {
       if (payload) {
         state.name = payload.name
         state.email = payload.email
+
+        storeUserData(state)
       }
     })
   },
 })
-export const { updateData } = loginSlice.actions
-export const loginReducer = loginSlice.reducer
+export const { updateUserData } = userSlice.actions
+export const userReducer = userSlice.reducer

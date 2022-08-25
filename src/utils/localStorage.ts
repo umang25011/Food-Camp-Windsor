@@ -1,4 +1,4 @@
-import { NormalUser } from "../features/login/loginSlice"
+import { NormalUser } from "../features/login/userSlice"
 
 const USER_LOCAL_STORAGE = "UserData"
 
@@ -9,7 +9,11 @@ export function storeUserData(user: NormalUser) {
 export function getNormalUserData() {
   const userData = localStorage.getItem(USER_LOCAL_STORAGE)
   if (userData) {
-    const user = JSON.parse(userData) as NormalUser
-    return user
+    try {
+      const user = JSON.parse(userData) as NormalUser
+      return user
+    } catch (error) {
+      throw new Error("Can't Read User Data, Login Again!")
+    }
   }
 }

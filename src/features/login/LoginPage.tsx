@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { loginWithGoogle } from "./loginSlice"
+import { loginWithGoogle } from "./userSlice"
 import "./loginPageCss.css"
 import { Navigate, useNavigate } from "react-router-dom"
 
@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const navigate = useNavigate()
-  const emailRedux = useAppSelector((state) => state.login.email)
+  const emailRedux = useAppSelector((state) => state.user.email)
   const dispatch = useAppDispatch()
 
   const handleValidation = () => {
